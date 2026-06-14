@@ -1,0 +1,5 @@
+__pycache__/
+*.db
+.env
+static/apuntes_pdf/
+*.pyc
