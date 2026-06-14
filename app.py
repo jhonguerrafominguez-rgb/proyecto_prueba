@@ -54,3 +54,38 @@ def inicializar_bd():
         ''', datos_semilla)
         conexion.commit()
     conexion.close()
+
+@app.route('/subir', methods=['GET', 'POST'])
+def subir_apunte():
+    if request.method == 'POST':
+        titulo = request.form.get('titulo', '').strip()
+        materia = request.form.get('materia', '').strip()
+        categoria = request.form.get('categoria', '').strip()
+        autor = request.form.get('autor', '').strip()
+        archivo = request.files.get('archivo')
+        
+        if not (titulo and materia and categoria and autor and archivo):
+            flash('Todos los campos son obligatorios.', 'error')
+            return redirect(url_for('subir_apunte'))
+            
+        if archivo.filename == '':
+            flash('Archivo no válido.', 'error')
+            return redirect(url_for('subir_apunte'))
+
+        nombre_seguro = secure_filename(archivo.filename)
+        ruta_guardado = os.path.join(app.config['UPLOAD_FOLDER'], nombre_seguro)
+        archivo.save(ruta_guardado)
+        
+        conexion = conectar_bd()
+        cursor = conexion.cursor()
+        cursor.execute('''
+            INSERT INTO apuntes (titulo, materia, categoria, autor, archivo_nombre)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (titulo, materia, categoria, autor, nombre_seguro))
+        conexion.commit()
+        conexion.close()
+        
+        flash('¡Material compartido con éxito!', 'exito')
+        return redirect(url_for('inicio'))
+        
+    return render_template('subir_apunte.html')
