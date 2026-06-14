@@ -12,6 +12,13 @@
 
 </body>
 
+<form method="GET" action="/" class="buscador-formulario">
+    <input type="text" name="buscar" value="{{ busqueda }}" placeholder="Buscar asignatura o palabra clave..."
+        class="buscador-input">
+    <button type="submit" class="btn-principal">Buscar</button>
+</form>
+
+
 <div class="lista-apuntes">
     {% if apuntes %}
     {% for apunte in apuntes %}
