@@ -111,6 +111,16 @@ def subir_apunte():
         
     return render_template('subir_apunte.html')
 
+@app.route('/estrella/<int:apunte_id>', methods=['POST'])
+def dar_estrella(apunte_id):
+    conexion = conectar_bd()
+    cursor = conexion.cursor()
+    cursor.execute('UPDATE apuntes SET estrellas = estrellas + 1 WHERE id = ?', (apunte_id,))
+    conexion.commit()
+    conexion.close()
+    return redirect(request.referrer or url_for('inicio'))
+
+
 @app.route('/descargar/<filename>')
 def descargar_archivo(filename):
     if filename in ["ejemplo_calculo.pdf", "ejemplo_poo.pdf"]:
