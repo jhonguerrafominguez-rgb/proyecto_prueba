@@ -13,14 +13,6 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 if not os.path.exists(CARPETA_SUBIDAS):
     os.makedirs(CARPETA_SUBIDAS)
 
-@app.route('/')
-def inicio():
-    return render_template('inicio.html')
-Servidor:
-if __name__ == '__main__':
-    app.run(debug=True)
-
-
 def conectar_bd():
     conexion = sqlite3.connect('apuntes.db')
     conexion.row_factory = sqlite3.Row
@@ -41,7 +33,7 @@ def inicializar_bd():
             estrellas INTEGER DEFAULT 0
         )
     ''')
-
+    
     cursor.execute('SELECT COUNT(*) FROM apuntes')
     if cursor.fetchone() == 0:
         datos_semilla = [
@@ -54,6 +46,35 @@ def inicializar_bd():
         ''', datos_semilla)
         conexion.commit()
     conexion.close()
+
+
+@app.route('/')
+def inicio():
+    busqueda = request.args.get('buscar', '').strip()
+    categoria_filtro = request.args.get('categoria', '').strip()
+    
+    conexion = conectar_bd()
+    cursor = conexion.cursor()
+    
+    query = "SELECT * FROM apuntes WHERE 1=1"
+    parametros = []
+    
+    if busqueda:
+        query += " AND (titulo LIKE ? OR materia LIKE ?)"
+        parametros.extend([f'%{busqueda}%', f'%{busqueda}%'])
+        
+    if categoria_filtro:
+        query += " AND categoria = ?"
+        parametros.append(categoria_filtro)
+        
+    query += " ORDER BY estrellas DESC, id DESC" # Destaca los apuntes con más estrellas primero
+    
+    cursor.execute(query, parametros)
+    todos_los_apuntes = cursor.fetchall()
+    conexion.close()
+    
+    return render_template('inicio.html', apuntes=todos_los_apuntes, busqueda=busqueda, categoria_actual=categoria_filtro)
+
 
 @app.route('/subir', methods=['GET', 'POST'])
 def subir_apunte():
