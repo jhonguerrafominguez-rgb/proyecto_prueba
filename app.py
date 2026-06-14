@@ -75,7 +75,6 @@ def inicio():
     
     return render_template('inicio.html', apuntes=todos_los_apuntes, busqueda=busqueda, categoria_actual=categoria_filtro)
 
-
 @app.route('/subir', methods=['GET', 'POST'])
 def subir_apunte():
     if request.method == 'POST':
@@ -111,6 +110,7 @@ def subir_apunte():
         
     return render_template('subir_apunte.html')
 
+# NUEVA RUTA: Sistema interactivo para reaccionar con estrellas
 @app.route('/estrella/<int:apunte_id>', methods=['POST'])
 def dar_estrella(apunte_id):
     conexion = conectar_bd()
@@ -119,7 +119,6 @@ def dar_estrella(apunte_id):
     conexion.commit()
     conexion.close()
     return redirect(request.referrer or url_for('inicio'))
-
 
 @app.route('/descargar/<filename>')
 def descargar_archivo(filename):
@@ -130,4 +129,3 @@ def descargar_archivo(filename):
 
 if __name__ == '__main__':
     app.run(debug=True)
-
