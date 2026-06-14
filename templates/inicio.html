@@ -10,45 +10,45 @@
 
 <body>
 
-</body>
-
-<form method="GET" action="/" class="buscador-formulario">
-    <input type="text" name="buscar" value="{{ busqueda }}" placeholder="Buscar asignatura o palabra clave..."
-        class="buscador-input">
-    <button type="submit" class="btn-principal">Buscar</button>
-</form>
+    <form method="GET" action="/" class="buscador-formulario">
+        <input type="text" name="buscar" value="{{ busqueda }}" placeholder="Buscar asignatura o palabra clave..."
+            class="buscador-input">
+        <button type="submit" class="btn-principal">Buscar</button>
+    </form>
 
 
-<div class="lista-apuntes">
-    {% if apuntes %}
-    {% for apunte in apuntes %}
-    <div class="tarjeta-apunte">
-        <div>
-            <div class="tags">
-                <span class="tag-materia">{{ apunte.materia }}</span>
-                <span class="tag-categoria">{{ apunte.categoria }}</span>
+    <div class="lista-apuntes">
+        {% if apuntes %}
+        {% for apunte in apuntes %}
+        <div class="tarjeta-apunte">
+            <div>
+                <div class="tags">
+                    <span class="tag-materia">{{ apunte.materia }}</span>
+                    <span class="tag-categoria">{{ apunte.categoria }}</span>
+                </div>
+                <h3 class="tarjeta-titulo">{{ apunte.titulo }}</h3>
+                <p class="tarjeta-autor">Por: {{ apunte.autor }}</p>
             </div>
-            <h3 class="tarjeta-titulo">{{ apunte.titulo }}</h3>
-            <p class="tarjeta-autor">Por: {{ apunte.autor }}</p>
-        </div>
 
-        <div class="tarjeta-derecha">
-            <!-- Botón de estrellas estructurado como formulario para mandar el voto -->
-            <form action="{{ url_for('dar_estrella', apunte_id=apunte.id) }}" method="POST" style="margin: 0;">
-                <button type="submit" class="btn-estrella">
-                    ⭐ <span>{{ apunte.estrellas }}</span>
-                </button>
-            </form>
-            <a href="/descargar/{{ apunte.archivo_nombre }}" class="btn-principal">⬇️ Descargar</a>
+            <div class="tarjeta-derecha">
+                <!-- Botón de estrellas estructurado como formulario para mandar el voto -->
+                <form action="{{ url_for('dar_estrella', apunte_id=apunte.id) }}" method="POST" style="margin: 0;">
+                    <button type="submit" class="btn-estrella">
+                        ⭐ <span>{{ apunte.estrellas }}</span>
+                    </button>
+                </form>
+                <a href="/descargar/{{ apunte.archivo_nombre }}" class="btn-principal">⬇️ Descargar</a>
+            </div>
         </div>
+        {% endfor %}
+        {% else %}
+        <div class="dropzone" style="border-style: dashed; padding: 2rem;">
+            <p style="color: var(--texto-gris);">No se encontraron apuntes cargados.</p>
+        </div>
+        {% endif %}
     </div>
-    {% endfor %}
-    {% else %}
-    <div class="dropzone" style="border-style: dashed; padding: 2rem;">
-        <p style="color: var(--texto-gris);">No se encontraron apuntes cargados.</p>
-    </div>
-    {% endif %}
-</div>
-</main>
+    </main>
+
+</body>
 
 </html>

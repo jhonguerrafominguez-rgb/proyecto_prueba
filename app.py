@@ -110,3 +110,14 @@ def subir_apunte():
         return redirect(url_for('inicio'))
         
     return render_template('subir_apunte.html')
+
+@app.route('/descargar/<filename>')
+def descargar_archivo(filename):
+    if filename in ["ejemplo_calculo.pdf", "ejemplo_poo.pdf"]:
+        flash('Modo Demostración: Los archivos subidos por ti sí se descargarán de forma real.', 'info')
+        return redirect(url_for('inicio'))
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
